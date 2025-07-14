@@ -1,39 +1,47 @@
-from pathlib import Path
-
-# Ruta donde se guardará el archivo HTML final
-output_path = Path("/mnt/data/malla_interactiva_ulagos_2025.html")
-
-# Código HTML base con funcionalidad de desbloqueo y tachado
-html_code = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Malla Interactiva Enfermería ULagos</title>
+  <title>Malla por Semestre - Enfermería ULagos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
+      background-color: #f8f8f8;
       padding: 20px;
     }
     h1 {
       text-align: center;
       margin-bottom: 30px;
     }
-    .malla {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
+    .semestre {
+      margin-bottom: 30px;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background-color: #ffffff;
+    }
+    .semestre h2 {
+      background-color: #007bff;
+      color: white;
+      padding: 8px;
+      border-radius: 8px;
+    }
+    .ramos {
+      display: flex;
+      flex-wrap: wrap;
       gap: 10px;
+      margin-top: 10px;
     }
     .ramo {
-      background-color: white;
+      background: #ffffff;
       border: 2px solid #ccc;
+      border-radius: 8px;
       padding: 10px;
-      border-radius: 10px;
-      text-align: center;
       cursor: pointer;
-      transition: 0.3s;
+      transition: 0.3s ease;
+      flex: 1 1 calc(33% - 20px);
+      text-align: center;
     }
     .ramo.tachado {
       text-decoration: line-through;
@@ -52,22 +60,45 @@ html_code = """
   </style>
 </head>
 <body>
-  <h1>Malla Interactiva - Enfermería ULagos</h1>
-  <div class="malla" id="malla">
-    <div class="ramo" data-id="comunicacion">Comunicación I</div>
-    <div class="ramo bloqueado" data-id="ciudadania" data-prerrequisitos="comunicacion">Ciudadanía I</div>
-    <div class="ramo" data-id="enfermeria">Enfermería: Profesión y Disciplina</div>
-    <div class="ramo bloqueado" data-id="cuidado" data-prerrequisitos="enfermeria">Ciencia del Cuidado en Enfermería</div>
-    <div class="ramo" data-id="bioquimica">Fundamentos Bioquímicos</div>
-    <div class="ramo bloqueado" data-id="epidemiologia" data-prerrequisitos="bioquimica">Epidemiología</div>
-    <div class="ramo bloqueado" data-id="salud_publica" data-prerrequisitos="epidemiologia">Salud Pública</div>
-    <div class="ramo bloqueado" data-id="gestion1" data-prerrequisitos="salud_publica">Gestión del Cuidado I</div>
-    <div class="ramo bloqueado" data-id="gestion2" data-prerrequisitos="gestion1">Gestión del Cuidado II</div>
-    <div class="ramo bloqueado" data-id="gestion3" data-prerrequisitos="gestion2">Gestión del Cuidado III</div>
-    <div class="ramo bloqueado" data-id="gestion4" data-prerrequisitos="gestion3">Gestión del Cuidado IV</div>
-    <div class="ramo bloqueado" data-id="internado1" data-prerrequisitos="gestion4">Internado I</div>
-    <div class="ramo bloqueado" data-id="internado2" data-prerrequisitos="internado1">Internado II</div>
+  <h1>Malla Interactiva por Semestre - Enfermería ULagos</h1>
+
+  <!-- SEMESTRE 1 -->
+  <div class="semestre">
+    <h2>I Semestre</h2>
+    <div class="ramos">
+      <div class="ramo" data-id="comunicacion">Comunicación I</div>
+      <div class="ramo" data-id="enfermeria">Enfermería: Profesión y Disciplina</div>
+      <div class="ramo" data-id="bio1">Introducción a los Fundamentos Biológicos</div>
+      <div class="ramo" data-id="socios">Fund. sociológicos y antropológicos</div>
+      <div class="ramo" data-id="autocuidado">Desarrollo personal</div>
+    </div>
   </div>
+
+  <!-- SEMESTRE 2 -->
+  <div class="semestre">
+    <h2>II Semestre</h2>
+    <div class="ramos">
+      <div class="ramo bloqueado" data-id="ciudadania" data-prerrequisitos="comunicacion">Ciudadanía I</div>
+      <div class="ramo bloqueado" data-id="bioquimica" data-prerrequisitos="bio1">Fundamentos bioquímicos</div>
+      <div class="ramo bloqueado" data-id="bioestadistica" data-prerrequisitos="comunicacion">Bioestadística</div>
+      <div class="ramo bloqueado" data-id="socioculturales" data-prerrequisitos="socios">Fund. socioculturales</div>
+      <div class="ramo bloqueado" data-id="cuidado1" data-prerrequisitos="enfermeria">Ciencia del cuidado en Enfermería</div>
+    </div>
+  </div>
+
+  <!-- SEMESTRE 3 -->
+  <div class="semestre">
+    <h2>III Semestre</h2>
+    <div class="ramos">
+      <div class="ramo bloqueado" data-id="ingles1" data-prerrequisitos="comunicacion">Inglés I</div>
+      <div class="ramo bloqueado" data-id="epidemiologia" data-prerrequisitos="bioestadistica">Epidemiología</div>
+      <div class="ramo bloqueado" data-id="promocion" data-prerrequisitos="cuidado1">Promoción y Diversidad</div>
+      <div class="ramo bloqueado" data-id="fisiopato" data-prerrequisitos="bio1">Fund. fisiopatológicos</div>
+      <div class="ramo bloqueado" data-id="morfo" data-prerrequisitos="bio1">Fund. morfofuncionales</div>
+    </div>
+  </div>
+
+  <!-- Puedes seguir agregando los semestres siguientes (IV al X) de la misma forma -->
 
   <script>
     const ramos = document.querySelectorAll('.ramo');
@@ -75,7 +106,6 @@ html_code = """
     ramos.forEach(ramo => {
       ramo.addEventListener('click', () => {
         if (ramo.classList.contains('bloqueado')) return;
-
         ramo.classList.add('tachado');
         desbloquearRamos(ramo.dataset.id);
       });
@@ -100,12 +130,3 @@ html_code = """
   </script>
 </body>
 </html>
-"""
-
-# Guardar el archivo HTML
-output_path.write_text(html_code, encoding="utf-8")
-
-# Devolver el nombre del archivo para descarga
-output_path.name
-
-  
