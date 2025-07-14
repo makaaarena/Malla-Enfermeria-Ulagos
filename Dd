@@ -1,0 +1,139 @@
+# Crear una nueva versión del archivo HTML con los ramos organizados por semestre
+output_semestres = Path("/mnt/data/malla_interactiva_por_semestre.html")
+
+# HTML estructurado por semestre
+html_por_semestre = """
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Malla por Semestre - Enfermería ULagos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .semestre {
+      margin-bottom: 30px;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background-color: #ffffff;
+    }
+    .semestre h2 {
+      background-color: #007bff;
+      color: white;
+      padding: 8px;
+      border-radius: 8px;
+    }
+    .ramos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .ramo {
+      background: #ffffff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      flex: 1 1 calc(33% - 20px);
+      text-align: center;
+    }
+    .ramo.tachado {
+      text-decoration: line-through;
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+    .ramo.bloqueado {
+      background-color: #e0e0e0;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .ramo.desbloqueado {
+      background-color: #cce5ff;
+      border-color: #5bc0de;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva por Semestre - Enfermería ULagos</h1>
+
+  <div class="semestre">
+    <h2>I Semestre</h2>
+    <div class="ramos">
+      <div class="ramo" data-id="comunicacion">Comunicación I</div>
+      <div class="ramo" data-id="enfermeria">Enfermería: Profesión y Disciplina</div>
+      <div class="ramo" data-id="bio1">Fundamentos Biológicos</div>
+      <div class="ramo" data-id="socios">Fund. Sociológicos</div>
+      <div class="ramo" data-id="autocuidado">Desarrollo Personal</div>
+    </div>
+  </div>
+
+  <div class="semestre">
+    <h2>II Semestre</h2>
+    <div class="ramos">
+      <div class="ramo bloqueado" data-id="ciudadania" data-prerrequisitos="comunicacion">Ciudadanía I</div>
+      <div class="ramo bloqueado" data-id="bioquimica" data-prerrequisitos="bio1">Fundamentos Bioquímicos</div>
+      <div class="ramo bloqueado" data-id="bioestadistica" data-prerrequisitos="comunicacion">Bioestadística</div>
+      <div class="ramo bloqueado" data-id="socioculturales" data-prerrequisitos="socios">Fund. Socioculturales</div>
+      <div class="ramo bloqueado" data-id="cuidado1" data-prerrequisitos="enfermeria">Cuidado en Enfermería</div>
+    </div>
+  </div>
+
+  <div class="semestre">
+    <h2>III Semestre</h2>
+    <div class="ramos">
+      <div class="ramo bloqueado" data-id="ingles1" data-prerrequisitos="comunicacion">Inglés I</div>
+      <div class="ramo bloqueado" data-id="epidemiologia" data-prerrequisitos="bioestadistica">Epidemiología</div>
+      <div class="ramo bloqueado" data-id="promocion" data-prerrequisitos="cuidado1">Promoción y Diversidad</div>
+      <div class="ramo bloqueado" data-id="fisiopato" data-prerrequisitos="bio1">Fund. Fisiopatológicos</div>
+      <div class="ramo bloqueado" data-id="morfo" data-prerrequisitos="bio1">Fund. Morfofuncionales</div>
+    </div>
+  </div>
+
+  <!-- Puedes seguir añadiendo semestres siguientes aquí -->
+
+  <script>
+    const ramos = document.querySelectorAll('.ramo');
+
+    ramos.forEach(ramo => {
+      ramo.addEventListener('click', () => {
+        if (ramo.classList.contains('bloqueado')) return;
+
+        ramo.classList.add('tachado');
+        desbloquearRamos(ramo.dataset.id);
+      });
+    });
+
+    function desbloquearRamos(idAprobado) {
+      ramos.forEach(ramo => {
+        const requisitos = ramo.dataset.prerrequisitos?.split(',');
+        if (!requisitos) return;
+
+        const todosCumplidos = requisitos.every(req => {
+          const prereqRamo = document.querySelector(`[data-id="${req}"]`);
+          return prereqRamo && prereqRamo.classList.contains('tachado');
+        });
+
+        if (todosCumplidos && ramo.classList.contains('bloqueado')) {
+          ramo.classList.remove('bloqueado');
+          ramo.classList.add('desbloqueado');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+"""
+
+# Guardar HTML en el archivo
+output_semestres.write_text(html_por_semestre, encoding="utf-8")
+output_semestres.name
