@@ -1,3 +1,10 @@
+from pathlib import Path
+
+# Ruta donde se guardará el archivo HTML final
+output_path = Path("/mnt/data/malla_interactiva_ulagos_2025.html")
+
+# Código HTML base con funcionalidad de desbloqueo y tachado
+html_code = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,11 +14,12 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f0f0f0;
       padding: 20px;
-      background: #f4f4f4;
     }
     h1 {
       text-align: center;
+      margin-bottom: 30px;
     }
     .malla {
       display: grid;
@@ -19,12 +27,13 @@
       gap: 10px;
     }
     .ramo {
-      background: #fff;
-      padding: 10px;
+      background-color: white;
       border: 2px solid #ccc;
+      padding: 10px;
       border-radius: 10px;
+      text-align: center;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: 0.3s;
     }
     .ramo.tachado {
       text-decoration: line-through;
@@ -32,86 +41,71 @@
       border-color: #28a745;
     }
     .ramo.bloqueado {
-      opacity: 0.5;
-      pointer-events: none;
+      background-color: #e0e0e0;
+      cursor: not-allowed;
+      opacity: 0.6;
     }
-    .basicas { background-color: #d1ecf1; }
-    .gestion { background-color: #d6d8db; }
-    .asistencial { background-color: #cce5ff; }
-    .promocion { background-color: #fff3cd; }
-    .ufin { background-color: #e2e3e5; }
-    .investigacion { background-color: #e2d6f3; }
+    .ramo.desbloqueado {
+      background-color: #cce5ff;
+      border-color: #5bc0de;
+    }
   </style>
 </head>
 <body>
   <h1>Malla Interactiva - Enfermería ULagos</h1>
   <div class="malla" id="malla">
-    <!-- Aquí puedes pegar todos los <div class="ramo ...> ... </div> que generamos antes -->
-    <div class="ramo basicas" data-id="comunicacion">Comunicación I</div>
-    <div class="ramo promocion" data-id="enfermeria_prof">Enfermería: Profesión y Disciplina</div>
-    <div class="ramo basicas" data-id="intro_biologicos">Introducción a los Fundamentos Biológicos</div>
-    <div class="ramo promocion" data-id="fund_socios">Fund. sociológicos y antropológicos</div>
-    <div class="ramo ufin" data-id="desarrollo_personal">Desarrollo personal y autoconocimiento</div>
-    <div class="ramo basicas bloqueado" data-id="ciudadania" data-prerrequisitos="comunicacion">Ciudadanía I</div>
-    <div class="ramo basicas bloqueado" data-id="fund_bioquimicos" data-prerrequisitos="intro_biologicos">Fundamentos bioquímicos</div>
-    <div class="ramo investigacion bloqueado" data-id="bioestadistica" data-prerrequisitos="comunicacion">Bioestadística</div>
-    <div class="ramo promocion bloqueado" data-id="fund_socioculturales" data-prerrequisitos="fund_socios">Fundamentos socioculturales</div>
-    <div class="ramo promocion bloqueado" data-id="cuidado_enfermero" data-prerrequisitos="enfermeria_prof">Ciencia del cuidado en Enfermería</div>
-    <div class="ramo basicas bloqueado" data-id="ingles1" data-prerrequisitos="comunicacion">Inglés I</div>
-    <div class="ramo investigacion bloqueado" data-id="epidemiologia" data-prerrequisitos="bioestadistica">Epidemiología</div>
-    <div class="ramo promocion bloqueado" data-id="promocion_salud" data-prerrequisitos="cuidado_enfermero">Promoción de la salud y Diversidad</div>
-    <div class="ramo basicas bloqueado" data-id="fund_fisiopatologicos" data-prerrequisitos="intro_biologicos">Fundamentos fisiopatológicos</div>
-    <div class="ramo basicas bloqueado" data-id="fund_morfofuncionales" data-prerrequisitos="intro_biologicos">Fundamentos morfofuncionales</div>
-    <div class="ramo basicas bloqueado" data-id="ingles2" data-prerrequisitos="ingles1">Inglés II</div>
-    <div class="ramo promocion bloqueado" data-id="salud_publica" data-prerrequisitos="epidemiologia">Salud Pública</div>
-    <div class="ramo asistencial bloqueado" data-id="gestion_cuidado1" data-prerrequisitos="salud_publica">Gestión del Cuidado I</div>
-    <div class="ramo investigacion bloqueado" data-id="metodologia" data-prerrequisitos="bioestadistica">Metodología de la Investigación</div>
-    <div class="ramo ufin" data-id="electivo_ufin1">Electivo UFIN</div>
-    <div class="ramo basicas bloqueado" data-id="ingles3" data-prerrequisitos="ingles2">Inglés III</div>
-    <div class="ramo asistencial bloqueado" data-id="gestion_cuidado2" data-prerrequisitos="gestion_cuidado1">Gestión del Cuidado II</div>
-    <div class="ramo basicas bloqueado" data-id="farmacologia" data-prerrequisitos="fund_fisiopatologicos">Farmacología para Enfermería</div>
-    <div class="ramo asistencial bloqueado" data-id="taller_integrado1" data-prerrequisitos="gestion_cuidado1">Taller Integrado I</div>
-    <div class="ramo ufin" data-id="electivo_ufin2">Electivo UFIN</div>
-    <div class="ramo basicas bloqueado" data-id="ingles4" data-prerrequisitos="ingles3">Inglés IV</div>
-    <div class="ramo asistencial bloqueado" data-id="gestion_cuidado3" data-prerrequisitos="gestion_cuidado2">Gestión del Cuidado III (niños y adolescentes)</div>
-    <div class="ramo investigacion bloqueado" data-id="invest_enfermeria" data-prerrequisitos="metodologia">Investigación en Enfermería</div>
-    <div class="ramo asistencial bloqueado" data-id="taller_integrado2" data-prerrequisitos="taller_integrado1">Taller Integrado II</div>
-    <div class="ramo ufin" data-id="electivo_ufrn">Electivo UFRN</div>
-    <div class="ramo investigacion bloqueado" data-id="seminario_invest" data-prerrequisitos="invest_enfermeria">Seminario de Investigación</div>
-    <div class="ramo asistencial bloqueado" data-id="gestion_cuidado4" data-prerrequisitos="gestion_cuidado3">Gestión del Cuidado IV (urgencias)</div>
-    <div class="ramo asistencial bloqueado" data-id="gestion_cuidado5" data-prerrequisitos="gestion_cuidado4">Gestión del Cuidado V (adulto y adulto mayor)</div>
-    <div class="ramo asistencial bloqueado" data-id="gestion_cuidado6" data-prerrequisitos="gestion_cuidado5">Gestión del Cuidado VI (personas en situación crítica)</div>
-    <div class="ramo gestion bloqueado" data-id="admin_gestion" data-prerrequisitos="gestion_cuidado5">Gestión y Administración en Salud y Enfermería</div>
-    <div class="ramo asistencial bloqueado" data-id="internado1" data-prerrequisitos="gestion_cuidado4,gestion_cuidado5">Internado Gestión del Cuidado I</div>
-    <div class="ramo asistencial bloqueado" data-id="internado2" data-prerrequisitos="gestion_cuidado6">Internado Gestión del Cuidado II</div>
-    <div class="ramo ufin bloqueado" data-id="electivo_titulacion">Electivo UFRN</div>
+    <div class="ramo" data-id="comunicacion">Comunicación I</div>
+    <div class="ramo bloqueado" data-id="ciudadania" data-prerrequisitos="comunicacion">Ciudadanía I</div>
+    <div class="ramo" data-id="enfermeria">Enfermería: Profesión y Disciplina</div>
+    <div class="ramo bloqueado" data-id="cuidado" data-prerrequisitos="enfermeria">Ciencia del Cuidado en Enfermería</div>
+    <div class="ramo" data-id="bioquimica">Fundamentos Bioquímicos</div>
+    <div class="ramo bloqueado" data-id="epidemiologia" data-prerrequisitos="bioquimica">Epidemiología</div>
+    <div class="ramo bloqueado" data-id="salud_publica" data-prerrequisitos="epidemiologia">Salud Pública</div>
+    <div class="ramo bloqueado" data-id="gestion1" data-prerrequisitos="salud_publica">Gestión del Cuidado I</div>
+    <div class="ramo bloqueado" data-id="gestion2" data-prerrequisitos="gestion1">Gestión del Cuidado II</div>
+    <div class="ramo bloqueado" data-id="gestion3" data-prerrequisitos="gestion2">Gestión del Cuidado III</div>
+    <div class="ramo bloqueado" data-id="gestion4" data-prerrequisitos="gestion3">Gestión del Cuidado IV</div>
+    <div class="ramo bloqueado" data-id="internado1" data-prerrequisitos="gestion4">Internado I</div>
+    <div class="ramo bloqueado" data-id="internado2" data-prerrequisitos="internado1">Internado II</div>
   </div>
 
   <script>
     const ramos = document.querySelectorAll('.ramo');
+
     ramos.forEach(ramo => {
       ramo.addEventListener('click', () => {
-        if (ramo.classList.contains('tachado')) return;
+        if (ramo.classList.contains('bloqueado')) return;
+
         ramo.classList.add('tachado');
         desbloquearRamos(ramo.dataset.id);
       });
     });
+
     function desbloquearRamos(idAprobado) {
       ramos.forEach(ramo => {
         const requisitos = ramo.dataset.prerrequisitos?.split(',');
         if (!requisitos) return;
-        if (requisitos.includes(idAprobado)) {
-          const restantes = requisitos.filter(r => {
-            const prereqRamo = document.querySelector(`[data-id="${r}"]`);
-            return !prereqRamo?.classList.contains('tachado');
-          });
-          if (restantes.length === 0) {
-            ramo.classList.remove('bloqueado');
-          }
+
+        const todosCumplidos = requisitos.every(req => {
+          const prereqRamo = document.querySelector(`[data-id="${req}"]`);
+          return prereqRamo && prereqRamo.classList.contains('tachado');
+        });
+
+        if (todosCumplidos && ramo.classList.contains('bloqueado')) {
+          ramo.classList.remove('bloqueado');
+          ramo.classList.add('desbloqueado');
         }
       });
     }
   </script>
 </body>
 </html>
+"""
 
+# Guardar el archivo HTML
+output_path.write_text(html_code, encoding="utf-8")
+
+# Devolver el nombre del archivo para descarga
+output_path.name
+
+  
